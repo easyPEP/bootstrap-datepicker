@@ -697,8 +697,9 @@
 				fromArgs = false;
 			if (arguments.length){
 				$.each(arguments, $.proxy(function(i, date){
-					if (date instanceof Date)
+					if (date instanceof Date) {
 						date = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
+					}
 					dates.push(date);
 				}, this));
 				fromArgs = true;
