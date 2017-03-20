@@ -317,32 +317,32 @@
 			}
 		},
 		_buildEvents: function(){
-            var events = {
-                keyup: $.proxy(function(e){
-                    if ($.inArray(e.keyCode, [27, 37, 39, 38, 40, 32, 13, 9]) === -1)
-                        this.update();
-                }, this),
-                keydown: $.proxy(this.keydown, this)
-            };
+						var events = {
+								keyup: $.proxy(function(e){
+										if ($.inArray(e.keyCode, [27, 37, 39, 38, 40, 32, 13, 9]) === -1)
+												this.update();
+								}, this),
+								keydown: $.proxy(this.keydown, this)
+						};
 
-            if (this.o.showOnFocus === true) {
-                events.focus = $.proxy(this.show, this);
-            }
+						if (this.o.showOnFocus === true) {
+								events.focus = $.proxy(this.show, this);
+						}
 
-            if (this.isInput) { // single input
-                this._events = [
-                    [this.element, events]
-                ];
-            }
-            else if (this.component && this.hasInput) { // component: input + button
-                this._events = [
-                    // For components that are not readonly, allow keyboard nav
-                    [this.element.find('input'), events],
-                    [this.component, {
-                        click: $.proxy(this.show, this)
-                    }]
-                ];
-            }
+						if (this.isInput) { // single input
+								this._events = [
+										[this.element, events]
+								];
+						}
+						else if (this.component && this.hasInput) { // component: input + button
+								this._events = [
+										// For components that are not readonly, allow keyboard nav
+										[this.element.find('input'), events],
+										[this.component, {
+												click: $.proxy(this.show, this)
+										}]
+								];
+						}
 			else if (this.element.is('div')){  // inline datepicker
 				this.isInline = true;
 			}
@@ -717,6 +717,21 @@
 			dates = $.map(dates, $.proxy(function(date){
 				return DPGlobal.parseDate(date, this.o.format, this.o.language);
 			}, this));
+
+			// Make the dates comparable, to avoid errors when a DST switch happens in that time
+			var oStartDateUTC = UTCDate(this.o.startDate.getFullYear(), this.o.startDate.getMonth(), this.o.startDate.getDate());
+			var oEndDateUTC   = UTCDate(this.o.endDate.getFullYear(), this.o.endDate.getMonth(), this.o.endDate.getDate());
+
+			dates = $.grep(dates, $.proxy(function(date){
+				var dateUTC   = UTCDate(date.getFullYear(), date.getMonth(), date.getDate());
+
+				return (
+					dateUTC < oStartDateUTC ||
+					dateUTC > oEndDateUTC   ||
+					!dateUTC
+				);
+			}, this), true);
+
 			dates = $.grep(dates, $.proxy(function(date){
 				return (
 					date < this.o.startDate ||
@@ -1531,7 +1546,7 @@
 		todayHighlight: false,
 		weekStart: 0,
 		disableTouchKeyboard: false,
-        enableOnReadonly: true,
+				enableOnReadonly: true,
 		container: 'body'
 	};
 	var locale_opts = $.fn.datepicker.locale_opts = [
