@@ -732,15 +732,6 @@
 				);
 			}, this), true);
 
-			dates = $.grep(dates, $.proxy(function(date){
-				return (
-					date < this.o.startDate ||
-					date > this.o.endDate ||
-					!date
-				);
-			}, this), true);
-			this.dates.replace(dates);
-
 			if (this.dates.length)
 				this.viewDate = new Date(this.dates.get(-1));
 			else if (this.viewDate < this.o.startDate)
