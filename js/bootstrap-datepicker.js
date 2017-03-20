@@ -698,7 +698,7 @@
 			if (arguments.length){
 				$.each(arguments, $.proxy(function(i, date){
 					if (date instanceof Date)
-						date = this._local_to_utc(date);
+						date = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
 					dates.push(date);
 				}, this));
 				fromArgs = true;
